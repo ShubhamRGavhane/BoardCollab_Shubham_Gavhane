@@ -163,7 +163,9 @@ npm run dev
 Server runs at:
 
 http://localhost:5000
-Frontend Setup
+
+
+# Frontend Setup
 
 Navigate to frontend folder
 
@@ -180,7 +182,9 @@ npm start
 Frontend runs at:
 
 http://localhost:3000
-WebSocket Events
+
+
+# WebSocket Events
 join-room
 
 User joins a collaboration room.
@@ -206,7 +210,9 @@ socket.emit("draw-stroke", {
 Server broadcasts to other users:
 
 socket.to(roomId).emit("draw-stroke", stroke);
-Database Schema
+
+
+# Database Schema
 Session Schema
 const SessionSchema = new Schema({
   roomId: { type: String, required: true, unique: true },
@@ -231,7 +237,9 @@ const SessionSchema = new Schema({
     default: Date.now
   }
 });
-Performance Optimizations
+
+
+# Performance Optimizations
 Batched Database Writes
 
 Stroke events are batched and saved every 5 seconds to reduce database load.
@@ -246,7 +254,9 @@ WebSocket Room Broadcasting
 Only users in the same room receive updates.
 
 socket.to(roomId).emit("draw-stroke", stroke);
-Conflict Resolution Strategy
+
+
+# Conflict Resolution Strategy
 
 Two approaches are considered for concurrent editing.
 
@@ -274,7 +284,7 @@ Y.js
 
 Automerge
 
-Scaling Strategy
+# Scaling Strategy
 
 To support 50+ concurrent users per room:
 
@@ -283,7 +293,9 @@ Redis Adapter for Socket.IO
 Used for horizontal scaling across servers.
 
 socket.io-redis
-MongoDB Sharding
+
+
+# MongoDB Sharding
 
 Sessions can be sharded by:
 
@@ -295,7 +307,7 @@ MongoDB Change Streams
 
 Allows backend instances to receive real-time database updates.
 
-Performance Benchmark (Estimated)
+# Performance Benchmark (Estimated)
 
 Test scenario:
 
@@ -305,15 +317,15 @@ Test scenario:
 Result:
 
 Average sync latency: ~50–80ms
-Assumptions
 
-Maximum 10k elements per canvas
 
+# Assumptions
+
+Maximum 10k elements per canvas 
 Maximum 50–100 users per room
-
 Single region deployment
 
-Future Improvements
+# Future Improvements
 
 Full OT implementation
 
@@ -327,25 +339,20 @@ Collaborative cursors
 
 Canvas virtualization
 
-Deployment
+# Deployment
 
 Frontend
-
-Vercel
-
-Netlify
+  Vercel
+  Netlify
 
 Backend
-
-AWS EC2
-
-Docker
+  AWS EC2
+  Docker
 
 Database
+  MongoDB Atlas
 
-MongoDB Atlas
-
-Author
+# Author
 
 Shubham Gavhane
 
