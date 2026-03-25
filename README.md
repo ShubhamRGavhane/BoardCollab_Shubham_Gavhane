@@ -164,7 +164,6 @@ Server runs at:
 
 http://localhost:5000
 
-
 # Frontend Setup
 
 Navigate to frontend folder
@@ -183,8 +182,8 @@ Frontend runs at:
 
 http://localhost:3000
 
-
 # WebSocket Events
+
 join-room
 
 User joins a collaboration room.
@@ -203,43 +202,43 @@ Triggered when a user draws.
 Client emits:
 
 socket.emit("draw-stroke", {
-  roomId,
-  stroke
+roomId,
+stroke
 });
 
 Server broadcasts to other users:
 
 socket.to(roomId).emit("draw-stroke", stroke);
 
-
 # Database Schema
+
 Session Schema
 const SessionSchema = new Schema({
-  roomId: { type: String, required: true, unique: true },
+roomId: { type: String, required: true, unique: true },
 
-  elements: [
-    {
-      type: { type: String },
-      data: Object,
-      timestamp: Date
-    }
-  ],
+elements: [
+{
+type: { type: String },
+data: Object,
+timestamp: Date
+}
+],
 
-  users: [
-    {
-      userId: Schema.Types.ObjectId,
-      joinedAt: Date
-    }
-  ],
+users: [
+{
+userId: Schema.Types.ObjectId,
+joinedAt: Date
+}
+],
 
-  lastUpdated: {
-    type: Date,
-    default: Date.now
-  }
+lastUpdated: {
+type: Date,
+default: Date.now
+}
 });
 
-
 # Performance Optimizations
+
 Batched Database Writes
 
 Stroke events are batched and saved every 5 seconds to reduce database load.
@@ -247,14 +246,13 @@ Stroke events are batched and saved every 5 seconds to reduce database load.
 Example logic:
 
 setInterval(() => {
-  saveBufferedStrokes();
+saveBufferedStrokes();
 }, 5000);
 WebSocket Room Broadcasting
 
 Only users in the same room receive updates.
 
 socket.to(roomId).emit("draw-stroke", stroke);
-
 
 # Conflict Resolution Strategy
 
@@ -294,7 +292,6 @@ Used for horizontal scaling across servers.
 
 socket.io-redis
 
-
 # MongoDB Sharding
 
 Sessions can be sharded by:
@@ -318,10 +315,9 @@ Result:
 
 Average sync latency: ~50–80ms
 
-
 # Assumptions
 
-Maximum 10k elements per canvas 
+Maximum 10k elements per canvas
 Maximum 50–100 users per room
 Single region deployment
 
@@ -341,18 +337,12 @@ Canvas virtualization
 
 # Deployment
 
-Frontend
-  Vercel
-  Netlify
+Frontend : Vercel, Netlify
 
-Backend
-  AWS EC2
-  Docker
+Backend : AWS EC2, Docker
 
-Database
-  MongoDB Atlas
+Database : MongoDB Atlas
 
 # Author
 
 Shubham Gavhane
-
