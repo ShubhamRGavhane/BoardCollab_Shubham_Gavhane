@@ -1,0 +1,35 @@
+# Node modules
+server/node_modules/
+client/node_modules/
+
+# Environment files
+server/.env
+client/.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build outputs
+server/dist/
+client/build/
+client/dist/
+
+# Misc
+*.log
+*.pid
+*.seed
+*.pid.lock
