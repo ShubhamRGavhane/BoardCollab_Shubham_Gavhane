@@ -6,131 +6,133 @@ This project simulates collaborative tools like **Figma** or **Miro** for remote
 
 ---
 
-# Architecture Overview
+## Architecture Overview
 
-        +----------------------+
-        |        React         |
-        |   (Konva Canvas UI)  |
-        +----------+-----------+
-                   |
-                   |  WebSocket (Socket.IO)
-                   |
-        +----------v-----------+
-        |   Node.js + Express  |
-        |   API + WS Hub       |
-        +----------+-----------+
-                   |
-                   |
-                MongoDB
+```
++----------------------+
+|        React         |
+|   (Konva Canvas UI)  |
++----------+-----------+
+           |
+           | WebSocket (Socket.IO)
+           |
++----------v-----------+
+|   Node.js + Express  |
+|   API + WS Hub       |
++----------+-----------+
+           |
+           |
+        MongoDB
+```
 
 ---
 
-# Features
+## Features
 
-## Authentication
+### Authentication
 
 - User registration
 - User login
 - JWT-based authentication
 
-## Room Management
+### Room Management
 
 - Create collaboration rooms
 - Join existing rooms
 - Multiple users collaborate in the same session
 
-## Real-Time Drawing
+### Real-Time Drawing
 
 - Freehand drawing
 - Real-time stroke synchronization
 - Instant canvas updates
 
-## Canvas Tools
+### Canvas Tools
 
 - Freehand strokes
 - Shapes (extensible)
 - Undo / Redo (per-user)
 - Clear canvas
 
-## Persistence
+### Persistence
 
 - Canvas state stored in MongoDB
 - Automatic session saving
 - Canvas restored when users reconnect
 
-## Export
+### Export
 
 - Export whiteboard as PNG or SVG
 
 ---
 
-# Technology Stack
+## Technology Stack
 
-## Frontend
+### Frontend
 
 - React
 - React Konva
 - Redux Toolkit
 - Socket.IO Client
 
-## Backend
+### Backend
 
 - Node.js
 - Express.js
 - Socket.IO
 
-## Database
+### Database
 
 - MongoDB
 - Mongoose
 
-## Authentication
+### Authentication
 
 - JSON Web Token (JWT)
 - bcrypt
 
 ---
 
-# Project Structure
+## Project Structure
 
+```
 BoardCollab_Sh
 │
 ├── README.md
 │
 ├── backend
-│ ├── server.js
-│ ├── socket.js
-│ │
-│ ├── config
-│ │ └── db.js
-│ │
-│ ├── models
-│ │ ├── User.js
-│ │ └── Session.js
-│ │
-│ ├── routes
-│ │ ├── auth.js
-│ │ └── rooms.js
-│ │
-│ └── middleware
-│ └── authMiddleware.js
+│   ├── server.js
+│   ├── socket.js
+│   │
+│   ├── config
+│   │   └── db.js
+│   │
+│   ├── models
+│   │   ├── User.js
+│   │   └── Session.js
+│   │
+│   ├── routes
+│   │   ├── auth.js
+│   │   └── rooms.js
+│   │
+│   └── middleware
+│       └── authMiddleware.js
 │
 └── frontend
-├── src
-│ ├── components
-│ │ ├── CanvasBoard.jsx
-│ │ └── Toolbar.jsx
-│ │
-│ ├── socket.js
-│ └── App.js
+    ├── src
+    │   ├── components
+    │   │   ├── CanvasBoard.jsx
+    │   │   └── Toolbar.jsx
+    │   │
+    │   ├── socket.js
+    │   └── App.js
+```
 
 ---
 
-# Installation & Setup
+## Installation & Setup
 
-## Prerequisites
-
-Make sure you have installed:
+### Prerequisites
 
 - Node.js
 - npm
@@ -139,210 +141,257 @@ Make sure you have installed:
 
 ---
 
-# Backend Setup
+## Backend Setup
 
-Navigate to backend folder
+### Navigate to backend
 
-bash
+```bash
 cd backend
+```
 
-Install dependencies
+### Install dependencies
 
+```bash
 npm install
+```
 
-Create .env file
+### Create `.env` file
 
+```env
 PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/boardcollab
 JWT_SECRET=supersecret
+```
 
-Start backend server
+### Start backend
 
+```bash
 npm run dev
+```
 
-Server runs at:
+Backend runs at:
 
+```
 http://localhost:5000
+```
 
-# Frontend Setup
+---
 
-Navigate to frontend folder
+## Frontend Setup
 
+### Navigate to frontend
+
+```bash
 cd frontend
+```
 
-Install dependencies
+### Install dependencies
 
+```bash
 npm install
+```
 
-Start frontend
+### Start frontend
 
+```bash
 npm start
+```
 
 Frontend runs at:
 
+```
 http://localhost:3000
+```
 
-# WebSocket Events
+---
 
-join-room
+## WebSocket Events
 
-User joins a collaboration room.
+### join-room
 
 Client emits:
 
+```javascript
 socket.emit("join-room", roomId);
+```
 
-Server responds with existing canvas data:
+Server responds:
 
+```javascript
 socket.emit("init-canvas", elements);
-draw-stroke
+```
 
-Triggered when a user draws.
+---
+
+### draw-stroke
 
 Client emits:
 
+```javascript
 socket.emit("draw-stroke", {
-roomId,
-stroke
+  roomId,
+  stroke,
 });
+```
 
-Server broadcasts to other users:
+Server broadcasts:
 
+```javascript
 socket.to(roomId).emit("draw-stroke", stroke);
+```
 
-# Database Schema
+---
 
-Session Schema
+## Database Schema
+
+### Session Schema
+
+```javascript
 const SessionSchema = new Schema({
-roomId: { type: String, required: true, unique: true },
+  roomId: { type: String, required: true, unique: true },
 
-elements: [
-{
-type: { type: String },
-data: Object,
-timestamp: Date
-}
-],
+  elements: [
+    {
+      type: { type: String },
+      data: Object,
+      timestamp: Date,
+    },
+  ],
 
-users: [
-{
-userId: Schema.Types.ObjectId,
-joinedAt: Date
-}
-],
+  users: [
+    {
+      userId: Schema.Types.ObjectId,
+      joinedAt: Date,
+    },
+  ],
 
-lastUpdated: {
-type: Date,
-default: Date.now
-}
+  lastUpdated: {
+    type: Date,
+    default: Date.now,
+  },
 });
+```
 
-# Performance Optimizations
+---
 
-Batched Database Writes
+## Performance Optimizations
 
-Stroke events are batched and saved every 5 seconds to reduce database load.
+### Batched Database Writes
 
-Example logic:
-
+```javascript
 setInterval(() => {
-saveBufferedStrokes();
+  saveBufferedStrokes();
 }, 5000);
-WebSocket Room Broadcasting
+```
 
-Only users in the same room receive updates.
+### WebSocket Room Broadcasting
 
+```javascript
 socket.to(roomId).emit("draw-stroke", stroke);
+```
 
-# Conflict Resolution Strategy
+---
 
-Two approaches are considered for concurrent editing.
+## Conflict Resolution Strategy
 
-Operational Transformation (OT)
+### Operational Transformation (OT)
 
-Transforms operations against concurrent edits before applying them.
+Example:
 
-Example scenario:
-
+```
 User A moves shape
 User B deletes shape
+```
 
-OT ensures both operations merge safely.
+Library:
 
-Library example:
-
+```
 ot-json0
-CRDT (Conflict-Free Replicated Data Types)
+```
 
-Ensures eventual consistency across distributed systems.
+---
 
-Possible libraries:
+### CRDT (Conflict-Free Replicated Data Types)
 
-Y.js
+- Y.js
+- Automerge
 
-Automerge
+---
 
-# Scaling Strategy
+## Scaling Strategy
 
-To support 50+ concurrent users per room:
+### Redis Adapter
 
-Redis Adapter for Socket.IO
-
-Used for horizontal scaling across servers.
-
+```
 socket.io-redis
+```
 
-# MongoDB Sharding
+### MongoDB Sharding
 
-Sessions can be sharded by:
-
+```
 roomId
+```
 
-This distributes load across clusters.
+### MongoDB Change Streams
 
-MongoDB Change Streams
+Used for real-time sync across instances.
 
-Allows backend instances to receive real-time database updates.
+---
 
-# Performance Benchmark (Estimated)
+## Performance Benchmark
 
-Test scenario:
+### Test Scenario
 
+```
 20 concurrent users
 200 strokes per minute
+```
 
-Result:
+### Result
 
+```
 Average sync latency: ~50–80ms
+```
 
-# Assumptions
+---
 
-Maximum 10k elements per canvas
-Maximum 50–100 users per room
-Single region deployment
+## Assumptions
 
-# Future Improvements
+- Maximum 10k elements per canvas
+- Maximum 50–100 users per room
+- Single region deployment
 
-Full OT implementation
+---
 
-Redis adapter integration
+## Future Improvements
 
-Offline mode using IndexedDB
+- Full OT implementation
+- Redis adapter integration
+- Offline mode (IndexedDB)
+- AI shape recognition
+- Collaborative cursors
+- Canvas virtualization
 
-AI shape recognition
+---
 
-Collaborative cursors
+## Deployment
 
-Canvas virtualization
+### Frontend
 
-# Deployment
+- Vercel
+- Netlify
 
-Frontend : Vercel, Netlify
+### Backend
 
-Backend : AWS EC2, Docker
+- AWS EC2
+- Docker
 
-Database : MongoDB Atlas
+### Database
 
-# Author
+- MongoDB Atlas
 
-Shubham Gavhane
+---
+
+## Author
+
+**Shubham Gavhane**
